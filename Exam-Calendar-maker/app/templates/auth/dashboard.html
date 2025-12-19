@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel - Sınav Programı{% endblock %}
+
+{% block content %}
+<!-- ========================================== -->
+<!-- KULLANICI PANELİ -->
+<!-- ========================================== -->
+<section class="dashboard-section">
+    <div class="container">
+        <!-- Hoşgeldin Mesajı -->
+        <div class="dashboard-header">
+            <h1>👋 Hoş Geldiniz, {{ user.full_name }}</h1>
+            <p class="user-role">
+                {% if user.role == 'admin' %}
+                👑 Sistem Yöneticisi
+                {% elif user.role == 'bolum_yetkili' %}
+                🏛️ Bölüm Yetkilisi
+                {% elif user.role == 'hoca' %}
+                👨‍🏫 Öğretim Üyesi
+                {% else %}
+                🎓 Öğrenci
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- İstatistik Kartları -->
+        <div class="stats-grid">
+            <!-- Fakülte Sayısı -->
+            <div class="stat-card">
+                <div class="stat-icon">🏛️</div>
+                <div class="stat-info">
+                    <h3>{{ stats.faculty_count }}</h3>
+                    <p>Fakülte</p>
+                </div>
+            </div>
+
+            <!-- Bölüm Sayısı -->
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-info">
+                    <h3>{{ stats.department_count }}</h3>
+                    <p>Bölüm</p>
+                </div>
+            </div>
+
+            <!-- Ders Sayısı -->
+            <div class="stat-card">
+                <div class="stat-icon">📖</div>
+                <div class="stat-info">
+                    <h3>{{ stats.course_count }}</h3>
+                    <p>Ders</p>
+                </div>
+            </div>
+
+            <!-- Derslik Sayısı -->
+            <div class="stat-card">
+                <div class="stat-icon">🏫</div>
+                <div class="stat-info">
+                    <h3>{{ stats.classroom_count }}</h3>
+                    <p>Derslik</p>
+                </div>
+            </div>
+
+            <!-- Öğretim Üyesi Sayısı -->
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🏫</div>
+                <div class="stat-info">
+                    <h3>{{ stats.instructor_count }}</h3>
+                    <p>Öğretim Üyesi</p>
+                </div>
+            </div>
+
+            <!-- Sınav Sayısı -->
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-info">
+                    <h3>{{ stats.exam_count }}</h3>
+                    <p>Planlanan Sınav</p>
+                </div>
+            </div>
+
+            <!-- Kullanıcı Sayısı (Sadece Admin) -->
+            {% if user.role == 'admin' %}
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3>{{ stats.user_count }}</h3>
+                    <p>Kullanıcı</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Hızlı Erişim Menüsü -->
+        <div class="quick-actions">
+            <h2>⚡ Hızlı Erişim</h2>
+
+            <!-- Admin Menüsü -->
+            {% if user.role == 'admin' %}
+            <div class="actions-layout">
+                <!-- Sol Taraf - Yönetim Kartları -->
+                <div class="actions-left">
+                    <div class="actions-grid">
+                        <a href="/admin/faculties" class="action-card">
+                            <div class="action-icon">🏛️</div>
+                            <h3>Fakülteler</h3>
+                            <p>Fakülte ekle, düzenle, sil</p>
+                        </a>
+
+                        <a href="/admin/departments" class="action-card">
+                            <div class="action-icon">📚</div>
+                            <h3>Bölümler</h3>
+                            <p>Bölüm ekle, düzenle, sil</p>
+                        </a>
+
+                        <a href="/admin/instructors" class="action-card">
+                            <div class="action-icon">👨‍🏫</div>
+                            <h3>Öğretim Üyeleri</h3>
+                            <p>Hoca ekle, düzenle, sil</p>
+                        </a>
+
+                        <a href="/admin/courses" class="action-card">
+                            <div class="action-icon">📖</div>
+                            <h3>Dersler</h3>
+                            <p>Ders ekle, düzenle, sil</p>
+                        </a>
+
+                        <a href="/admin/classrooms" class="action-card">
+                            <div class="action-icon">🏫</div>
+                            <h3>Derslikler</h3>
+                            <p>Derslik ekle, düzenle, sil</p>
+                        </a>
+
+                        <a href="/admin/users" class="action-card">
+                            <div class="action-icon">👥</div>
+                            <h3>Kullanıcılar</h3>
+                            <p>Kullanıcı yönetimi</p>
+                        </a>
+
+                        <a href="/admin/availability" class="action-card">
+                            <div class="action-icon">📆</div>
+                            <h3>Müsaitlik</h3>
+                            <p>Hoca müsaitliklerini yönet</p>
+                        </a>
+
+                        <a href="/admin/students" class="action-card">
+                            <div class="action-icon">🎓</div>
+                            <h3>Öğrenciler</h3>
+                            <p>Öğrenci bilgilerini görüntüle</p>
+                        </a>
+
+                        <a href="/schedule/view" class="action-card">
+                            <div class="action-icon">📅</div>
+                            <h3>Program Görüntüle</h3>
+                            <p>Sınav programını gör</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sağ Taraf - Sınav Planlama -->
+                <div class="actions-right">
+                    <a href="/schedule/generate" class="action-card-large action-primary">
+                        <div class="action-icon-large">🤖</div>
+                        <h3>Sınav Planla</h3>
+                        <p>Otomatik planlama başlat</p>
+                        <div class="action-arrow">→</div>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Bölüm Yetkilisi Menüsü -->
+            {% if user.role == 'bolum_yetkili' %}
+            <div class="actions-grid">
+                <a href="/admin/courses" class="action-card">
+                    <div class="action-icon">📖</div>
+                    <h3>Dersler</h3>
+                    <p>Bölüm derslerini yönet</p>
+                </a>
+
+                <a href="/admin/instructors" class="action-card">
+                    <div class="action-icon">👨‍🏫</div>
+                    <h3>Öğretim Üyeleri</h3>
+                    <p>Hoca bilgilerini yönet</p>
+                </a>
+
+                <a href="/admin/availability" class="action-card">
+                    <div class="action-icon">📆</div>
+                    <h3>Müsaitlik</h3>
+                    <p>Hoca müsaitliklerini yönet</p>
+                </a>
+
+                <a href="/schedule/view" class="action-card">
+                    <div class="action-icon">📅</div>
+                    <h3>Program Görüntüle</h3>
+                    <p>Sınav programını gör</p>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Hoca Menüsü -->
+            {% if user.role == 'hoca' %}
+            <div class="actions-grid">
+                <a href="/instructor/availability" class="action-card">
+                    <div class="action-icon">📆</div>
+                    <h3>Müsaitlik</h3>
+                    <p>Müsait günleri belirle</p>
+                </a>
+
+                <a href="/instructor/courses" class="action-card">
+                    <div class="action-icon">📖</div>
+                    <h3>Derslerim</h3>
+                    <p>Verdiğim dersleri gör</p>
+                </a>
+
+                <a href="/schedule/view" class="action-card">
+                    <div class="action-icon">📅</div>
+                    <h3>Sınav Programı</h3>
+                    <p>Sınav tarihlerini gör</p>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Öğrenci Menüsü -->
+            {% if user.role == 'ogrenci' %}
+            <div class="actions-grid">
+                <a href="/schedule/view" class="action-card">
+                    <div class="action-icon">📅</div>
+                    <h3>Sınav Programı</h3>
+                    <p>Sınav tarihlerini gör</p>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}

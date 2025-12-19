@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Sınav Programı{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="container">
+        <!-- Sayfa Başlığı -->
+        <div class="page-header">
+            <h1>📅 Sınav Programı</h1>
+            {% if session.get('role') == 'admin' %}
+            <div class="header-actions">
+                <a href="{{ url_for('schedule.generate') }}" class="btn btn-primary">
+                    🤖 Otomatik Planla
+                </a>
+                <a href="{{ url_for('schedule.clear_schedule') }}" class="btn btn-danger"
+                    onclick="return confirm('Tüm sınav programını silmek istediğinize emin misiniz?')">
+                    🗑️ Programı Temizle
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-number">{{ stats.total_exams }}</span>
+                <span class="stat-label">Planlanmış Sınav</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ stats.exam_days }}</span>
+                <span class="stat-label">Sınav Günü</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ stats.used_classrooms }}</span>
+                <span class="stat-label">Kullanılan Derslik</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ stats.unplanned_courses }}</span>
+                <span class="stat-label">Planlanmamış Ders</span>
+            </div>
+        </div>
+
+        <!-- Filtre ve Export -->
+        <div class="filter-export-row">
+            <!-- Bölüm Filtresi -->
+            <div class="filter-section">
+                <label for="department-filter">Bölüme Göre Filtrele:</label>
+                <select id="department-filter" onchange="filterByDepartment(this.value)">
+                    <option value="">Tüm Bölümler</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {{ 'selected' if selected_department==dept.id else '' }}>
+                        {{ dept.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Export Butonları -->
+            {% if exams|length > 0 %}
+            <div class="export-buttons">
+                <a href="{{ url_for('schedule.export_pdf') }}" class="btn btn-export">
+                    📄 PDF İndir
+                </a>
+                <a href="{{ url_for('schedule.export_excel') }}" class="btn btn-export btn-excel">
+                    📊 Excel İndir
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sınav Tablosu -->
+        <div class="card">
+            {% if exams|length > 0 %}
+            <table class="table schedule-table">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>Ders Kodu</th>
+                        <th>Ders Adı</th>
+                        <th>Bölüm</th>
+                        <th>Derslik</th>
+                        <th>Gözetmen</th>
+                        <th>Öğrenci</th>
+                        {% if session.get('role') == 'admin' %}
+                        <th>İşlem</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exam in exams %}
+                    <tr>
+                        <td>
+                            <strong>{{ exam.exam_date }}</strong>
+                        </td>
+                        <td>{{ exam.start_time }} - {{ exam.end_time }}</td>
+                        <td><span class="badge badge-primary">{{ exam.course_code }}</span></td>
+                        <td>{{ exam.course_name }}</td>
+                        <td>{{ exam.department_name }}</td>
+                        <td><span class="badge">{{ exam.classroom_name }}</span></td>
+                        <td>{{ exam.supervisor_name or exam.instructor_name }}</td>
+                        <td>{{ exam.student_count }}</td>
+                        {% if session.get('role') == 'admin' %}
+                        <td>
+                            <a href="{{ url_for('schedule.delete_single_exam', exam_id=exam.id) }}"
+                                class="btn btn-sm btn-delete"
+                                onclick="return confirm('Bu sınavı silmek istediğinize emin misiniz?')">
+                                🗑️</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h3>Henüz sınav planlanmamış</h3>
+                <p>Otomatik planlama yaparak sınav programı oluşturabilirsiniz.</p>
+                {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('schedule.generate') }}" class="btn btn-primary">
+                    🤖 Şimdi Planla
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Geri Butonu -->
+        <div class="back-link">
+            <a href="{{ url_for('auth.dashboard') }}">← Panele Dön</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    function filterByDepartment(departmentId) {
+        if (departmentId) {
+            window.location.href = '/schedule/view/department/' + departmentId;
+        } else {
+            window.location.href = '/schedule/view';
+        }
+    }
+</script>
+{% endblock %}
