@@ -226,20 +226,20 @@ Uygulama **Greedy (Açgözlü)** algoritma kullanır:
 | OpenPyXL | 3.1.2 | Excel oluşturma |
 
 ---
+## 👨‍💻 Geliştirici
 
-##  Ekip
+**Ebrar İkbal Karakuzu** ve diğer STRAWHATS proje grubu üyeleri
 
-| İsim | Görev |
-|------|-------|
-| Alperen | Full Stack Geliştirme |
-| Ebrar Karakuzu|
----
-
-## 📄 Lisans
-
-Bu proje eğitim amaçlı geliştirilmiştir.
+GitHub: https://github.com/ebrar-krkz
+- LinkedIn: [Ebrar İkbal Karakuzu](https://www.linkedin.com/in/ebrar-ikbal-karakuzu-91a937299)
 
 ---
+
+## 📜 Lisans
+
+Bu proje eğitim ve geliştirme amaçlı oluşturulmuştur.
+
+Tüm hakları saklıdır.
 
 <p align="center">
   <b>🎓 2025 - Kocaeli Sağlık ve Teknoloji Üniversitesi</b>
